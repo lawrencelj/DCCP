@@ -4,25 +4,25 @@
 
 ## Define Freequent use static varuables
 rawDataURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-rawDataFolder <-"rawDataFolder"
+rawDataFolder <- "rawDataFolder"
 rawDataFile   <- "rawData.zip"
 temporaryFolder <-"tmpFolder"
 downloadMethod  <- "curl"
-rawDataRoot <-"./tmpFolder/UCI HAR Dataset"
-rawTrainPath <-paste(rawDataRoot,"train",sep="/")
-rawTestPath  <-paste(rawDataRoot,"test",sep="/")
+rawDataRoot  <- "./tmpFolder/UCI HAR Dataset"
+rawTrainPath <- paste(rawDataRoot,"train",sep="/")
+rawTestPath  <- paste(rawDataRoot,"test",sep="/")
 
 
 ## Data File paths
-rawTrainData <-paste(rawTrainPath,"X_train.txt",sep="/")
-rawTestData  <-paste(rawTestPath,"X_test.txt",sep="/")
+rawTrainData <- paste(rawTrainPath,"X_train.txt",sep="/")
+rawTestData  <- paste(rawTestPath,"X_test.txt",sep="/")
 rawTrainLable <-paste(rawTrainPath,"Y_train.txt",sep="/")
 rawTestLable  <-paste(rawTestPath,"Y_test.txt",sep="/")
-trainSubject <-paste(rawTrainPath,"subject_train.txt",sep="/")
-testSubject  <-paste(rawTestPath,"subject_test.txt",sep="/")
+trainSubject <- paste(rawTrainPath,"subject_train.txt",sep="/")
+testSubject  <- paste(rawTestPath,"subject_test.txt",sep="/")
 
 ## request 4: lable valuables: column names
-colLable <- "Activies"
+colLable   <- "Activies"
 colSubject <- "Subject"
 colNameFilePath <- paste(rawDataRoot,"features.txt",sep="/")
 
@@ -67,6 +67,19 @@ prepareData <-function(url=rawDataURL,destFile=rawDataFile,unzipFolder=temporary
   }
 }
 
+## This function is simply for replacing ID with Activities name
+
+#replaceName<-function(reference,dataset)
+#{
+#  rfrow<-nrow(reference)
+##  for(r in 1:rfrow)
+#  {
+#    print(class(as.numeric(dataset[,1])))
+#    dataset[,1][as.numeric(as.character(dataset[,1]))==as.numeric(reference[r,1])]<-as.character(reference[r,1])          
+#  }
+#  View(dataset)
+#}
+
 ## this function will merge Train and Test data set to 
 ## new working folder. 
 ## 1. Training and Testing Data set will be read into
@@ -106,9 +119,29 @@ mergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolde
     dir.create(destFolder)
   }
 
+  ### Request 3: replace activities ID with name
+  actTable<- read.table(activitiesFile,col.names=c("ID","Activites"))
+  
+  trainAct <- read.table(rawTrainLable,col.names=colLable)
+#  trainAct<-merge(actTable,trainActTmp,by ="ID")
+  testAct  <- read.table(rawTestLable,col.names=colLable)
+  for(at in 1:nrow(actTable))
+  {
+    testAct[,colLable][testAct[,colLable]==actTable[at,1]]<-as.character(actTable[at,2])
+    trainAct[,colLable][trainAct[,colLable]==actTable[at,1]]<-as.character(actTable[at,2])
+  }
+
+#  replaceName(actTable,testAct)
+  
+
   ### Construct DataFram/DataTable 
   rawTrain<-cbind(read.table(trainSubject,col.names=colSubject),
-                  read.table(rawTrainLable,col.names=colLable),
-                    read.table(rawTrainData,col.names=colDataName))
-  summary(rawTrain)
+                  trainAct,read.table(rawTrainData,col.names=colDataName))
+  rawTest<-cbind(read.table(testSubject,col.names=colSubject),
+                 testAct,read.table(rawTestData,col.names=colDataName))
+  rawTotal<-rbind(rawTrain,rawTest)
+  
+  View(rawTotal)
+  
 }
+
