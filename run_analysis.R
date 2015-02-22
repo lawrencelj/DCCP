@@ -5,11 +5,49 @@
 ## Define Freequent use static varuables
 rawDataURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 rawDataFolder <-"rawDataFolder"
-rawDataFile <- "rawData.zip"
+rawDataFile   <- "rawData.zip"
 temporaryFolder <-"tmpFolder"
-downloadMethod <- "curl"
-trainDataPath <-"./tmpFolder/UCI HAR Dataset/train"
-testDataPath <- "./tmpFolder/UCI HAR Dataset/test"
+downloadMethod  <- "curl"
+rawTrainPath <-"./tmpFolder/UCI HAR Dataset/train"
+rawTestPath  <- "./tmpFolder/UCI HAR Dataset/test"
+rawTrainDataFolder <-"./tmpFolder/UCI HAR Dataset/train/Inertial Signals"
+rawTestDataFolder  <- "./tmpFolder/UCI HAR Dataset/test/Inertial Signals"
+
+## Data File name
+trainX <-"X_train.txt"
+testX  <-"X_test.txt"
+trainY <-"Y_train.txt"
+testY  <-"Y_test.txt"
+trainSubject <-"subject_train.txt"
+testSubject  <-"subject_test.txt"
+
+## Training Data Set
+rawTrainBodyAccX <-"body_acc_x_train.txt"
+rawTrainBodyAccY <-"body_acc_y_train.txt"
+rawTrainBodyAccZ <-"body_acc_z_train.txt"
+
+rawTrainBodyGyroX <-"body_gyro_x_train.txt"
+rawTrainBodyGyroY <-"body_gyro_y_train.txt"
+rawTrainBodyGyroZ <-"body_gyro_z_train.txt"
+
+rawTrainTotalX <-"total_acc_x_train.txt"
+rawTrainTotalY <-"total_acc_y_train.txt"
+rawTrainTotalZ <-"total_acc_z_train.txt"
+
+## Testing Data Set
+rawTestBodyAccX <-"body_acc_x_test.txt"
+rawTestBodyAccY <-"body_acc_y_test.txt"
+rawTestBodyAccZ <-"body_acc_z_test.txt"
+
+rawTestBodyGyroX <-"body_gyro_x_test.txt"
+rawTestBodyGyroY <-"body_gyro_y_test.txt"
+rawTestBodyGyroZ <-"body_gyro_z_test.txt"
+
+rawTestTotalX <-"total_acc_x_test.txt"
+rawTestTotalY <-"total_acc_y_test.txt"
+rawTestTotalZ <-"total_acc_z_test.txt"
+
+
 empty <-0
  
 prepareData <-function(url=rawDataURL,destFile=rawDataFile,unzipFolder=temporaryFolder)
@@ -47,23 +85,20 @@ prepareData <-function(url=rawDataURL,destFile=rawDataFile,unzipFolder=temporary
 
 ## this function will merge Train and Test data set to 
 ## new working folder. 
-## 1. Folder will be merged to a new folder.
-## 2. Files will be merged into 1 files if names are same. 
-## 3. If there is file has no matching one in either folder
-##    it will simply be copied over.
-## 4. Data in file will be merge to 1 if all records are
-##    the same, otherwise will be treat as 2 different 
-##    records.
-
-MergeData <-function(train=trainDataPath,test=testDataPath,destFolder=rawDataFolder)
+## 1. Training and Testing Data set will be read into
+##    separate dataset then will be merge together
+## 2. Merge dataset will be place in RawData Folder
+## 
+MergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolder)
 {
   
-  trainFilesNumber <- empty
-  testFilesnumber  <- empty
-  trainFilesList   <- list.files(train)
-  testFilesList    <- list.files(test)
-  trainXMergeDF
-  testXMergeDF
+  trainFilesNumber <- empty  # Number of training files in directory
+  testFilesnumber  <- empty  # Number of Testing files in directory
+  trainFilesList   <- list.files(train) # getting file list
+  testFilesList    <- list.files(test)  # Same as above
+  trainDF
+  testDF
+
   ### Checking if target source folders and files exist
   if(file.exists(train))
   {
@@ -88,6 +123,7 @@ MergeData <-function(train=trainDataPath,test=testDataPath,destFolder=rawDataFol
     dir.create(destFolder)
   }
 
+  ### Construct DataFram/DataTable 
   
   
 }
