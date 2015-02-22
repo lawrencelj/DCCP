@@ -8,45 +8,29 @@ rawDataFolder <-"rawDataFolder"
 rawDataFile   <- "rawData.zip"
 temporaryFolder <-"tmpFolder"
 downloadMethod  <- "curl"
-rawTrainPath <-"./tmpFolder/UCI HAR Dataset/train"
-rawTestPath  <- "./tmpFolder/UCI HAR Dataset/test"
-rawTrainDataFolder <-"./tmpFolder/UCI HAR Dataset/train/Inertial Signals"
-rawTestDataFolder  <- "./tmpFolder/UCI HAR Dataset/test/Inertial Signals"
+rawDataRoot <-"./tmpFolder/UCI HAR Dataset"
+rawTrainPath <-paste(rawDataRoot,"train",sep="/")
+rawTestPath  <-paste(rawDataRoot,"test",sep="/")
 
-## Data File name
-trainX <-"X_train.txt"
-testX  <-"X_test.txt"
-trainY <-"Y_train.txt"
-testY  <-"Y_test.txt"
-trainSubject <-"subject_train.txt"
-testSubject  <-"subject_test.txt"
 
-## Training Data Set
-rawTrainBodyAccX <-"body_acc_x_train.txt"
-rawTrainBodyAccY <-"body_acc_y_train.txt"
-rawTrainBodyAccZ <-"body_acc_z_train.txt"
+## Data File paths
+rawTrainData <-paste(rawTrainPath,"X_train.txt",sep="/")
+rawTestData  <-paste(rawTestPath,"X_test.txt",sep="/")
+rawTrainLable <-paste(rawTrainPath,"Y_train.txt",sep="/")
+rawTestLable  <-paste(rawTestPath,"Y_test.txt",sep="/")
+trainSubject <-paste(rawTrainPath,"subject_train.txt",sep="/")
+testSubject  <-paste(rawTestPath,"subject_test.txt",sep="/")
 
-rawTrainBodyGyroX <-"body_gyro_x_train.txt"
-rawTrainBodyGyroY <-"body_gyro_y_train.txt"
-rawTrainBodyGyroZ <-"body_gyro_z_train.txt"
+## request 4: lable valuables: column names
+colLable <- "Activies"
+colSubject <- "Subject"
+colNameFilePath <- paste(rawDataRoot,"features.txt",sep="/")
 
-rawTrainTotalX <-"total_acc_x_train.txt"
-rawTrainTotalY <-"total_acc_y_train.txt"
-rawTrainTotalZ <-"total_acc_z_train.txt"
+### Getting column names for data from feature files
+colDataName <- read.table(colNameFilePath,col.names=c("ID","Feature.Name"))[,"Feature.Name"]
 
-## Testing Data Set
-rawTestBodyAccX <-"body_acc_x_test.txt"
-rawTestBodyAccY <-"body_acc_y_test.txt"
-rawTestBodyAccZ <-"body_acc_z_test.txt"
-
-rawTestBodyGyroX <-"body_gyro_x_test.txt"
-rawTestBodyGyroY <-"body_gyro_y_test.txt"
-rawTestBodyGyroZ <-"body_gyro_z_test.txt"
-
-rawTestTotalX <-"total_acc_x_test.txt"
-rawTestTotalY <-"total_acc_y_test.txt"
-rawTestTotalZ <-"total_acc_z_test.txt"
-
+## request 3: change the activities to name instead of number
+activitiesFile <- paste(rawDataRoot,"activity_labels.txt",sep="/")
 
 empty <-0
  
@@ -89,15 +73,14 @@ prepareData <-function(url=rawDataURL,destFile=rawDataFile,unzipFolder=temporary
 ##    separate dataset then will be merge together
 ## 2. Merge dataset will be place in RawData Folder
 ## 
-MergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolder)
+mergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolder)
 {
   
   trainFilesNumber <- empty  # Number of training files in directory
   testFilesnumber  <- empty  # Number of Testing files in directory
   trainFilesList   <- list.files(train) # getting file list
   testFilesList    <- list.files(test)  # Same as above
-  trainDF
-  testDF
+
 
   ### Checking if target source folders and files exist
   if(file.exists(train))
@@ -124,6 +107,8 @@ MergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolde
   }
 
   ### Construct DataFram/DataTable 
-  
-  
+  rawTrain<-cbind(read.table(trainSubject,col.names=colSubject),
+                  read.table(rawTrainLable,col.names=colLable),
+                    read.table(rawTrainData,col.names=colDataName))
+  summary(rawTrain)
 }
