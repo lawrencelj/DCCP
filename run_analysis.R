@@ -2,6 +2,9 @@
 # create a temporary folder call "temporaryFolder" right under
 # the working directory and unzip the file to this folder 
 
+library(dplyr)
+library(utils)
+
 ## Define Freequent use static varuables
 rawDataURL <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
 rawDataFolder <- "rawDataFolder"
@@ -20,6 +23,9 @@ rawTrainLable <-paste(rawTrainPath,"Y_train.txt",sep="/")
 rawTestLable  <-paste(rawTestPath,"Y_test.txt",sep="/")
 trainSubject <- paste(rawTrainPath,"subject_train.txt",sep="/")
 testSubject  <- paste(rawTestPath,"subject_test.txt",sep="/")
+
+## request 2: select mean and std variables only
+MSColNum<-c(1:6,41:46,81:86,121:126,161:166,201:202,214:215,227:228,240:241,253:254,266:271,345:350,424:429,503:504,516:517,529:530,542:543)
 
 ## request 4: lable valuables: column names
 colLable   <- "Activies"
@@ -86,7 +92,7 @@ prepareData <-function(url=rawDataURL,destFile=rawDataFile,unzipFolder=temporary
 ##    separate dataset then will be merge together
 ## 2. Merge dataset will be place in RawData Folder
 ## 
-mergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolder)
+reshapData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolder)
 {
   
   trainFilesNumber <- empty  # Number of training files in directory
@@ -120,10 +126,12 @@ mergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolde
   }
 
   ### Request 3: replace activities ID with name
+  ### getting activies info table and data activies table
+  ### then replace the data activies table accroding to 
+  ### the info table
   actTable<- read.table(activitiesFile,col.names=c("ID","Activites"))
   
   trainAct <- read.table(rawTrainLable,col.names=colLable)
-#  trainAct<-merge(actTable,trainActTmp,by ="ID")
   testAct  <- read.table(rawTestLable,col.names=colLable)
   for(at in 1:nrow(actTable))
   {
@@ -131,16 +139,22 @@ mergeData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFolde
     trainAct[,colLable][trainAct[,colLable]==actTable[at,1]]<-as.character(actTable[at,2])
   }
 
-#  replaceName(actTable,testAct)
-  
+# get raw data and select only those with Mean and Std measurement
+  rawAllTrain<-read.table(rawTrainData,col.names=colDataName)
+  rawSelectTrain<-rawAllTrain[,MSColNum]
 
-  ### Construct DataFram/DataTable 
+  rawAllTest <-read.table(rawTestData,col.names=colDataName)
+  rawSelectTest<-rawAllTest[,MSColNum]
+
+
+### Construct full DataFram/DataTable 
   rawTrain<-cbind(read.table(trainSubject,col.names=colSubject),
-                  trainAct,read.table(rawTrainData,col.names=colDataName))
+                  trainAct,rawSelectTrain)
   rawTest<-cbind(read.table(testSubject,col.names=colSubject),
-                 testAct,read.table(rawTestData,col.names=colDataName))
+                 testAct,rawSelectTest)
   rawTotal<-rbind(rawTrain,rawTest)
   
+#  View(rawAllTest)
   View(rawTotal)
   
 }
