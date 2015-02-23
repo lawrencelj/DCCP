@@ -158,8 +158,14 @@ reshapData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFold
   meltTotal<-melt(rawTotal,id=c(colSubject,colLable))
   tidyData<-tapply(meltTotal$value,list(meltTotal$Subject,meltTotal$Activities,meltTotal$variable),mean)
 #  tidyData<-melt
-#  View(subjectTotal)
+  View(tidyData)
 
-  write.table(tidyData,file=tidyDataPath)
+  write.table(tidyData,file=tidyDataPath,row.name=FALSE)
 }
 
+getTidyData<-function()
+{
+  prepareData()
+  reshapData()
+  
+}
