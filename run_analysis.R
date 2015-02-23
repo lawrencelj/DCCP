@@ -38,6 +38,8 @@ colDataName <- read.table(colNameFilePath,col.names=c("ID","Feature.Name"))[,"Fe
 ## request 3: change the activities to name instead of number
 activitiesFile <- paste(rawDataRoot,"activity_labels.txt",sep="/")
 
+tidyDataPath <- "./DCCP/tidy.txt"
+
 empty <-0
  
 prepareData <-function(url=rawDataURL,destFile=rawDataFile,unzipFolder=temporaryFolder)
@@ -154,8 +156,10 @@ reshapData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFold
                  testAct,rawSelectTest)
   rawTotal<-rbind(rawTrain,rawTest)
   meltTotal<-melt(rawTotal,id=c(colSubject,colLable))
-  subjectTotal<-tapply(meltTotal$value,list(meltTotal$Subject,meltTotal$Activities,meltTotal$variable),mean)
+  tidyData<-tapply(meltTotal$value,list(meltTotal$Subject,meltTotal$Activities,meltTotal$variable),mean)
 #  tidyData<-melt
-  View(subjectTotal)
+#  View(subjectTotal)
+
+  write.table(tidyData,file=tidyDataPath)
 }
 
