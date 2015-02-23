@@ -28,7 +28,7 @@ testSubject  <- paste(rawTestPath,"subject_test.txt",sep="/")
 MSColNum<-c(1:6,41:46,81:86,121:126,161:166,201:202,214:215,227:228,240:241,253:254,266:271,345:350,424:429,503:504,516:517,529:530,542:543)
 
 ## request 4: lable valuables: column names
-colLable   <- "Activies"
+colLable   <- "Activities"
 colSubject <- "Subject"
 colNameFilePath <- paste(rawDataRoot,"features.txt",sep="/")
 
@@ -153,9 +153,9 @@ reshapData <-function(train=rawTrainPath,test=rawTestPath,destFolder=rawDataFold
   rawTest<-cbind(read.table(testSubject,col.names=colSubject),
                  testAct,rawSelectTest)
   rawTotal<-rbind(rawTrain,rawTest)
-  
-#  View(rawAllTest)
-  View(rawTotal)
-  
+  meltTotal<-melt(rawTotal,id=c(colSubject,colLable))
+  subjectTotal<-tapply(meltTotal$value,list(meltTotal$Subject,meltTotal$Activities,meltTotal$variable),mean)
+#  tidyData<-melt
+  View(subjectTotal)
 }
 
