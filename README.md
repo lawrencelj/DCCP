@@ -4,9 +4,10 @@ prepareData()
 reshapData()
 getTidyData()
 
-to run the script, it requires only running the getTidayData(). which basicly running prepareData() and reshapData() in order.
+to run the script, it requires a folder call "tmpFolder", and then only running the getTidayData(). which basicly running prepareData() and reshapData() in order.
 
-prepareData() download required data by project as rawData.zip and create a temporary folder call "temporaryFolder" right under the working directory and unzip the file to this folder.
+prepareData() can take 3 parameters: 1. datafile URL. 2.Destination file name and path string. 3.unzip target folder.
+All these parameters have already defaulted as required by assignment. Download required data by project as rawData.zip and create a temporary folder call "temporaryFolder" right under the working directory and unzip the file to this folder.
 
 reshapData() will work as following order:
 
